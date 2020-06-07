@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Implementing GEMINI 2.3 (ISO19115:2003) as a GeoNetwork metadata profile</title>
+
+		<meta name="description" content="Implementing GEMINI 2.3 (ISO19115:2003) as a GeoNetwork metadata profile">
+		<meta name="author" content="Jo Cook, Astun Technology">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<link rel="stylesheet" href="css/reset.css">
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/league.css" id="theme">
+		<link rel="stylesheet" href="css/custom.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/monokai.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section data-background-color="white">
+					<h2 style="color:black">Implementing GEMINI 2.3 (ISO19115:2003) as a GeoNetwork metadata profile</h2>
+					<p>
+						<small style="color:black">Presented by Jo Cook, <a href="astuntechnology.com" _target="blank">Astun Technology</a></small>
+					</p>
+					<img class="center" src="./images/AstunSmallLogo.png" alt="logo">
+				</section>
+
+				<section>
+					<h3>Hi! I'm Jo <span class="fragment">*waves*</span></h3>
+					<span class="fragment">
+					<p>I'm the lead metadata consultant for <a target="new" href="https://astuntechnology.com">Astun Technology</a></p>
+					<img class="center" src="./images/teamphoto_2.jpg" alt="team photo" width="800">
+					<p>Astun are a small firm, with 20 staff. We're based in Epsom, Surrey, but have staff spread across the UK and abroad.</p>
+				</span>
+					<aside class="notes">(This image was taken pre-lockdown when it was OK to stand so close together, and indeed to get haircuts)</aside>
+				</section>
+
+				<section data-background-image="./images/Astun-Solutions.png" alt="Software" class="full" data-background-size="cover" data-background-color="white">
+					<p class="box-right">We provide web-based GIS products, services, and training to local authorities, government departments, devolved government, and commercial firms. These include mapping, databases, and metadata portals, all based on an open source geospatial stack</p>
+				</section>
+
+				<section data-background-image="./images/scotgov_distorted.png" alt="extension" class="full" data-background-size="cover" data-background-color="white">
+					<p class="box-right">We provide metadata portals for DEFRA and the Environment Agency, Scottish Government, and a number of local authorities.
+					This involves a lot of training, metadata wrangling, and integration with multiple other services</p>
+				</section>
+
+				<section  data-background-image="./images/metadata101.png" alt="extension" class="full" data-background-size="cover" data-background-color="white">
+					<p class="box-right">While supporting our metadata clients we have developed a plugin for the GEMINI 2.3 Metadata specification for the GeoNetwork catalog.<br /><br /> It's open source, and available at <a href="https://metadata101.org">metadata101</a> and <a href="https://github.com/AstunTechnology/iso19139.gemini23">GitHub</a> and works with most recent GeoNetwork versions.</p>
+				</section>
+
+				<section  data-background-image="./images/facepalm.jpg" alt="extension" class="full" data-background-size="cover" data-background-color="white">
+					<p class="box-right">Building the plugin, managing these metadata portals, and training people in their use, has given me an insight into some of the compromises that go into implementing a standard, the way people interact with it in real life, and things we can do to ensure a great end result</p>
+					<aside class="notes">Me when I started out</aside>
+				</section>
+
+
+				<section>
+					<h3>#1 It's a long journey from standard to plugin</h3>
+					<ul>
+					<li class="fragment">ISO19115:2003 <span class="fragment"> (the standard)</span></li>
+					<li class="fragment">ISO19139:2007 <span class="fragment"> (the XML implementation)</span></li>
+					<li class="fragment">INSPIRE TG:2017 <span class="fragment"> (extends and brings in ISO19119 for services)</span></li>
+					<li class="fragment">GEMINI 2.3 Specification:2018 <span class="fragment"> (clarifications, UK-specific requirements)</span></li>
+					<li class="fragment">GeoNetwork Plugin:2020 <span class="fragment"> (user interface)</span></li>
+					</ul>
+				</section>
+
+				<section data-background-image="./images/extensions.jpg" alt="extension" class="full" data-background-size="cover" data-background-color="white">
+					<div class="box-right">
+					<p>By the time we get to GeoNetwork we're a couple of steps removed from the standard, both temporally and conceptually</p>
+					<p>Every one of these steps introduces complexity and design decisions, in particular getting towards something people can interact with.</p>
+				</div>
+				</section>
+
+				<section>
+					<p>A simple example of this when checking for conformance against a data quality specification. In ISO19115:2003 this is defined as a boolean and hence traditionally displayed in a User Interface using a check box. Checked means a pass result, and unchecked means a fail. </p>
+					<img class="center" src="./images/pass-fail.png" alt="pass or fail" width="800">
+				</section>
+
+				<section>
+					<p>In INSPIRE TG:2017 and Gemini 2.3:2018 a third result is allowed: not evaluated. Simple check boxes can't convey the difference between a fail and "not evaluated" so we have to use a different approach.</p>
+					<img class="center" src="./images/pass-fail-no.png" alt="pass or fail" width="800">
+
+				</section>
+
+				<section>
+					<h3>#2 There's another step</h3>
+					<ul>
+						<span class="fragment">
+							<span class="fragment semi-fade-out">
+								<li>ISO19115:2003</li>
+								<li>ISO19139:2007</li>
+								<li>INSPIRE TG:2017</li>
+								<li>GEMINI 2.3 Specification:2018</li>
+							</span>
+							<li>GeoNetwork Plugin:2020</li>
+						</span>
+						<li class="fragment">The User</li>
+					</ul>
+				</section>
+
+				<section data-background-image="./images/whiterabbit.jpg" alt="extension" class="full" data-background-size="cover" data-background-color="white">
+					<p class="box-left">Very few users have the time and training to refer to the standards documentation when creating metadata.<br />So it's up to the profile plugin to provide them with guidance and utilities to help them do this.<br /><span class="fragment">Here are a few of those ways...</span></p>
+					<aside class="notes">End-users are not creating metadata because they want to, but because they have to. Previous versions of the plugin didn't always match display names to the names in the guidance, leading to confusion</aside>
+				</section>
+
+				<section>
+					<p>We've enhanced the GEMINI 2.3 editing interface with snippets about each element, links to the definitive guidance, and buttons for adding complex elements.</p>
+					<img class="center" src="./images/guidance.png" alt="guidance" width="600">
+				</section>
+
+				<section>
+					<p>We're using the GeoNetwork "suggestions wizard" to allow users to convert GEMINI 2.2 records to GEMINI 2.3, with one click.</p>
+					<img class="center" src="./images/convert.gif" alt="inflate-metadata" width="600"/>
+				</section>
+
+				<section>
+					<p>We're using another feature called "inflate-metadata" to automatically insert missing or inadvertently deleted mandatory elements</p>
+					<img class="center" src="./images/inflate-metadata.gif" alt="inflate-metadata" width="600"/>
+				</section>
+
+				<section>
+					<h3>#3 There's more...</h3>
+					<p class="fragment">Metadata profile plugins can include additional enhancements that are not related to the standard as such, but help with data quality, and discoverability.</p>
+				</section>
+
+				<section data-background-image="./images/geospatialcommission.png" alt="extension" class="full" data-background-size="cover" data-background-position="top" data-background-color="white">
+					<p class="box-right">A recent UK <a href="https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/865259/SEO_for_Data_Publishers_Best_Practice_Guide.pdf">Geospatial Commission report</a> advised data providers to utilise Search-Engine Optimisation techniques to ensure their datasets are discoverable and "highly ranked", and to include structured data to ensure that search engines can display results in a richer way.</p>
+				</section>
+
+				<section data-background-image="./images/structureddata.png" alt="structured data" class="full" data-background-position="center" data-background-size="contain" data-background-color="white">
+					<p class="box-right">In work funded by the Scottish Government to address these findings, one of the things we've done is to add <a href="schema.org">schema.org</a> structured data tags for metadata records.<br />This is now included in the GEMINI 2.3 Metadata Profile Plugin</p>
+					<aside class="notes">In development are processes to help with data quality, such as checking the length of titles and abstracts.</aside>
+				</section>
+
+				<section>
+					<h3>To summarise:</h3>
+					<ul>
+						<li class="fragment">There are a lot of steps between metadata standard and plugin</li>
+						<li class="fragment">These steps all introduce complexities and require implementation decisions</li>
+						<li class="fragment">Profile plugins can be used to enhance the user experience, and make it easier for them to produce high-quality metadata that meets the standard</li>
+				</section>
+
+
+
+				<section data-background-color="white">
+					<h3 style="color:black">Thank You!</h3>
+					<small style="color:black">Jo Cook, <a href="astuntechnology.com" _target="blank">Astun Technology</a></small>
+					<img class="center" src="./images/AstunSmallLogo.png" alt="logo">
+				</section>
+				
+			</div>
+
+
+		</div>
+
+		<script src="js/reveal.js"></script>
+		<script src="js/jquery-3.4.1.slim.min.js"></script>
+		<script src="js/jquery-canvas-sparkles.js"></script>
+
+
+		<script>
+
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				center: true,
+				hash: true,
+				slideNumber: "c/t",
+				showNotes: false,
+				pdfSeparateFragments: false,
+				pdfMaxPagesPerSlide: 1,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true },
+					{ src: 'plugin/search/search.js', async: true },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+
+
+
+				]
+
+
+			});
+
+			
+
+		</script>
+
+	</body>
+</html>
