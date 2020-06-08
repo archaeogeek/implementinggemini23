@@ -65,22 +65,30 @@
 				</section>
 
 				<section data-background-image="./images/scotgov_distorted.png" alt="extension" class="full" data-background-size="cover" data-background-color="white">
-					<p class="box-right">We provide metadata portals for DEFRA and the Environment Agency, Scottish Government, and a number of local authorities.
+					<p class="box-right">We manage metadata portals for DEFRA and the Environment Agency, Scottish Government, and a number of local authorities.
+						<br />
 					This involves a lot of training, metadata wrangling, and integration with multiple other services</p>
 				</section>
 
-				<section  data-background-image="./images/metadata101.png" alt="extension" class="full" data-background-size="cover" data-background-color="white">
+				<section  data-background-image="./images/metadata101.png" alt="metadata101" class="full" data-background-size="cover" data-background-color="white">
 					<p class="box-right">While supporting our metadata clients we have developed a plugin for the GEMINI 2.3 Metadata specification for the GeoNetwork catalog.<br /><br /> It's open source, and available at <a href="https://metadata101.org" target="_blank">metadata101</a> and <a href="https://github.com/AstunTechnology/iso19139.gemini23" target="_blank">GitHub</a> and works with most recent GeoNetwork versions.</p>
 				</section>
 
-				<section  data-background-image="./images/facepalm.jpg" alt="extension" class="full" data-background-size="cover" data-background-color="white">
-					<p class="box-right">Building the plugin, managing these metadata portals, and training people in their use, has given me an insight into some of the compromises that go into implementing a standard, the way people interact with it in real life, and things we can do to ensure a great end result</p>
-					<aside class="notes">Me when I started out</aside>
+				<section>
+					<h3>But Jo, what's a Plugin?</h3>
+					<p class="fragment">More than just the xsd and schematron!</p>
+					<p class="fragment">Creating a plugin allows you to build a custom editing layout, allows you to create and store valid metadata in different standards (eg Gemini 2.2 and 2.3) and to convert from one to the other.</p>
+					<p class="fragment">It also allows you to define custom xsl processes to help with validation, quality and management (more later).</p>
+				</section>
+
+				<section  data-background-image="./images/facepalm.jpg" alt="facepalm" class="full" data-background-size="cover" data-background-color="white">
+					<p class="box-right">Throughout this process, I've learnt a lot about the complexity of implementing a standard!
+						<br />I've also gained some insights into the way people interact with the standard "IRL", and consequently have included some features in the plugin to hopefully help them create valid, high-quality metadata</p>
 				</section>
 
 
 				<section>
-					<h3>#1 It's a long journey from standard to plugin</h3>
+					<h3>#1 It's a long journey from standard to plugin...</h3>
 					<ul>
 					<li class="fragment">ISO19115:2003 <span class="fragment"> (the standard)</span></li>
 					<li class="fragment">ISO19139:2007 <span class="fragment"> (the XML implementation)</span></li>
@@ -109,7 +117,7 @@
 				</section>
 
 				<section>
-					<h3>#2 There's another step</h3>
+					<h3>#2 There's another step in the process...</h3>
 					<ul>
 						<span class="fragment">
 							<span class="fragment semi-fade-out">
@@ -124,7 +132,7 @@
 					</ul>
 				</section>
 
-				<section data-background-image="./images/whiterabbit.jpg" alt="extension" class="full" data-background-size="cover" data-background-color="white">
+				<section data-background-image="./images/whiterabbit.jpg" alt="rabbit" class="full" data-background-size="cover" data-background-color="white">
 					<p class="box-left">Very few users have the time and training to refer to the standards documentation when creating metadata.<br />So it's up to the profile plugin to provide them with guidance and utilities to help them do this.<br /><span class="fragment">Here are a few of those ways...</span></p>
 					<aside class="notes">End-users are not creating metadata because they want to, but because they have to. Previous versions of the plugin didn't always match display names to the names in the guidance, leading to confusion</aside>
 				</section>
