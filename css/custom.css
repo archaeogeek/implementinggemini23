@@ -155,3 +155,7 @@ visibility: inherit;
 /*.reveal .slides section .fragment.current-fragment::before{
   content:"👉 " ;
 }*/
+
+ .reveal a {
+  color:red;
+ }
